@@ -4,7 +4,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const sequelize = require('./models').sequelize;
-const routes = require('./routes');
+const user = require('./routes/user');
+// const course = require('./routes/course');
 (async() => {
   try{
     await sequelize.authenticate();
@@ -24,7 +25,8 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/api', routes);
+app.use('/api/users', user);
+// app.use('/api/courses', course);
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
