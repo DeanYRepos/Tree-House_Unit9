@@ -16,20 +16,21 @@ function asyncHandler(cb) {
     }
   }
   //return the currently authenticated user along with a 200 HTTP status code.
-  router.get('/users', asyncHandler(async(res,req) => {
-     const user = req.authUser;
-    return res.status(200).json({
+  router.get('/', asyncHandler(async(res,req) => {
+     const user = await User.findAll(req.currentUser);
+   
+     res.json({
       firstName: user.firstName,
       lastName:  user.lastName,
       emailAddress: user.emailAddress,
 
-     });
+     }).status(200);
     
-     
+     console.log(user);
      
    }));
 
-  router.post('/users', asyncHandler(async(res,req) => {
+  router.post('/', asyncHandler(async(res,req) => {
 
     try{
      await User.create(req.body);

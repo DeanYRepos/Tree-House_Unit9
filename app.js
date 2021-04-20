@@ -5,12 +5,13 @@ const express = require('express');
 const morgan = require('morgan');
 const sequelize = require('./models').sequelize;
 const user = require('./routes/user');
-// const course = require('./routes/course');
+const course = require('./routes/course');
+
 (async() => {
   try{
     await sequelize.authenticate();
     console.log('Connection to the database was successful')
-    await sequelize.sync({force:true});
+    await sequelize.sync();
   }catch(error){
     console.log('There was a problem')
 
@@ -25,17 +26,17 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/api/users', user);
-// app.use('/api/courses', course);
+app.use('/api', user);
+app.use('/api', course);
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
 // setup a friendly greeting for the root route
-app.get('/', (req, res) => {
-  res.json({
-    message: 'Welcome to the REST API project!',
-  });
-});
+// app.get('/', (req, res) => {
+//   res.json({
+//     message: 'Welcome to the REST API project!',
+//   });
+// });
 
 // send 404 if no other route matched
 app.use((req, res) => {
