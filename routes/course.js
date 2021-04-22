@@ -17,7 +17,7 @@ function asyncHandler(cb) {
     }
   }
 
-  router.get('/', asyncHandler(async (res,req) => {
+  router.get('/courses', asyncHandler(async (res,req) => {
       const courses = await Course.findAll({
         include:[
           {
@@ -25,8 +25,14 @@ function asyncHandler(cb) {
           }
         ],
       });
-        res.json(courses).status(200);
+       res.res.status(200).json(courses);
        
+  }))
+  router.get('/courses/:id', asyncHandler(async(res, req) => {
+    const course = await Course.findAll(req.params.id);
+    res.json(course);
+    console.log(course);
+   
   }))
 
   module.exports = router;

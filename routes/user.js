@@ -19,12 +19,12 @@ function asyncHandler(cb) {
   router.get('/', asyncHandler(async(res,req) => {
      const user = await User.findAll(req.currentUser);
    
-     res.json({
+     res.status(200).json({
       firstName: user.firstName,
       lastName:  user.lastName,
       emailAddress: user.emailAddress,
 
-     }).status(200);
+     });
     
      console.log(user);
      
