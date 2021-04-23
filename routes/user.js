@@ -30,7 +30,7 @@ function asyncHandler(cb) {
      
    }));
 
-  router.post('/', asyncHandler(async(res,req) => {
+  router.post('/', asyncHandler(async (res,req) => {
 
     try{
      await User.create(req.body);

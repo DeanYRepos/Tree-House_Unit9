@@ -17,22 +17,30 @@ function asyncHandler(cb) {
     }
   }
 
-  router.get('/courses', asyncHandler(async (res,req) => {
+  router.get('/courses', asyncHandler(async (req,res) => {
       const courses = await Course.findAll({
         include:[
           {
             model: user,
+            as: 'User',
           }
         ],
       });
-       res.res.status(200).json(courses);
+       res.status(200).json(courses);
        
-  }))
-  router.get('/courses/:id', asyncHandler(async(res, req) => {
-    const course = await Course.findAll(req.params.id);
-    res.json(course);
-    console.log(course);
-   
-  }))
+  }));
+  
+  router.get('/courses/:id', asyncHandler(async(req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if (course){
+      res.json(course);
+      console.log(course);
+    } else {
+        res.status(404);
+    }
+  }));
 
+  router.post('/courses', asyncHandler(async (req, res) => {
+    
+  }))
   module.exports = router;
