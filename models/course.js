@@ -20,7 +20,13 @@ module.exports = (sequelize) => {
      
     }, { sequelize });
         Course.associate = (models) => {
-            Course.belongsTo(models.User);
+            Course.belongsTo(models.User, {
+                as:"User",
+                foreignKey:{
+                    fieldName: 'userId',
+                    allowNull:false
+                }
+            });
         }
 
     return Course;

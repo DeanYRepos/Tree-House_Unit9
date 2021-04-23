@@ -16,7 +16,7 @@ function asyncHandler(cb) {
     }
   }
   //return the currently authenticated user along with a 200 HTTP status code.
-  router.get('/', asyncHandler(async(res,req) => {
+  router.get('/', asyncHandler(async(req,res) => {
      const user = await User.findAll(req.currentUser);
    
      res.status(200).json({
@@ -30,7 +30,7 @@ function asyncHandler(cb) {
      
    }));
 
-  router.post('/', asyncHandler(async (res,req) => {
+  router.post('/', asyncHandler(async (req,res) => {
 
     try{
      await User.create(req.body);
@@ -41,8 +41,5 @@ function asyncHandler(cb) {
     }
   }));
 
-  router.get('/courses', asyncHandler(async (req,res) => {
-
-    
-  }))
+ 
   module.exports = router;

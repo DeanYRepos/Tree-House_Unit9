@@ -41,6 +41,12 @@ function asyncHandler(cb) {
   }));
 
   router.post('/courses', asyncHandler(async (req, res) => {
+    const course = await Course.create(req.body);
+    res.status(201).location(`/courses/${course.id}`).json("Course Created").end();
+
+  }))
+
+  router.put('/courses/:id', asyncHandler(async (req, res) => {
     
   }))
   module.exports = router;
