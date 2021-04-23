@@ -17,16 +17,49 @@ function asyncHandler(cb) {
     }
   }
 
-  router.get('/courses', asyncHandler(async (res,req) => {
+  router.get('/courses', asyncHandler(async (req,res) => {
       const courses = await Course.findAll({
         include:[
           {
             model: user,
+            as: 'User',
           }
         ],
       });
-        res.res.status(200).json(courses);
+       res.status(200).json(courses);
        
-  }))
+  }));
+  
+  router.get('/courses/:id', asyncHandler(async(req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if (course){
+      res.json(course);
+      console.log(course);
+    } else {
+        res.status(404);
+    }
+  }));
 
+  router.post('/courses', asyncHandler(async (req, res) => {
+    const course = await Course.create(req.body);
+    res.status(201).location(`/courses/${course.id}`).json({message: "Course Created"}).end();
+
+  }));
+
+  router.put('/courses/:id', asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if(course){
+      
+      course.title = req.body.title;
+      course.description = req.body.description;
+      course.estimatedTime = req.body.estimatedTime;
+      course. materialsNeeded = req.body.materialsNeeded;
+
+      await Course.update(course);
+      res.status(204).end();
+
+    }else{
+      res.status(404).json({message: "Course not found"})
+    }
+  }));
   module.exports = router;
