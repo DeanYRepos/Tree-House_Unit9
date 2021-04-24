@@ -50,12 +50,22 @@ function asyncHandler(cb) {
     const course = await Course.findByPk(req.params.id);
     if(course){
       
-      course.title = req.body.title;
-      course.description = req.body.description;
-      course.estimatedTime = req.body.estimatedTime;
-      course. materialsNeeded = req.body.materialsNeeded;
+  
+      await Course.update({
+        title: req.body.title,
+        description: req.body.description,
+        estimatedTime: req.body.estimatedTime,
+        materialsNeeded: req.body.materialsNeeded
+      }, {
+        where: {
+        title: course.title,
+        description: course.description,
+        estimatedTime: course.estimatedTime,
+        materialsNeeded: course.materialsNeeded
+     } }
 
-      await Course.update(course);
+  
+      );
       res.status(204).end();
 
     }else{
