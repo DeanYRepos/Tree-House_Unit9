@@ -69,7 +69,20 @@ function asyncHandler(cb) {
       res.status(204).end();
 
     }else{
-      res.status(404).json({message: "Course not found"})
+      res.status(404).json({message: "Course not found"});
     }
   }));
+
+  router.delete('/courses/:id', asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if(course){
+      await course.destroy();
+      res.status(204).end();
+    } else{
+      res.status(404).json({message: "Course not found"});
+    }
+  
+  }))
+
+
   module.exports = router;
