@@ -42,11 +42,47 @@ function asyncHandler(cb) {
 
   router.post('/courses', asyncHandler(async (req, res) => {
     const course = await Course.create(req.body);
-    res.status(201).location(`/courses/${course.id}`).json("Course Created").end();
+    res.status(201).location(`/courses/${course.id}`).json({message: "Course Created"}).end();
 
-  }))
+  }));
 
   router.put('/courses/:id', asyncHandler(async (req, res) => {
-    
+    const course = await Course.findByPk(req.params.id);
+    if(course){
+      
+  
+      await Course.update({
+        title: req.body.title,
+        description: req.body.description,
+        estimatedTime: req.body.estimatedTime,
+        materialsNeeded: req.body.materialsNeeded
+      }, {
+        where: {
+        title: course.title,
+        description: course.description,
+        estimatedTime: course.estimatedTime,
+        materialsNeeded: course.materialsNeeded
+     } }
+
+  
+      );
+      res.status(204).end();
+
+    }else{
+      res.status(404).json({message: "Course not found"});
+    }
+  }));
+
+  router.delete('/courses/:id', asyncHandler(async (req, res) => {
+    const course = await Course.findByPk(req.params.id);
+    if(course){
+      await course.destroy();
+      res.status(204).end();
+    } else{
+      res.status(404).json({message: "Course not found"});
+    }
+  
   }))
+
+
   module.exports = router;
