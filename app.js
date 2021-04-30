@@ -26,7 +26,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/', user);
+app.use('/api', user);
 app.use('/api', course);
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));

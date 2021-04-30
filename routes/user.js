@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models')
+const { authenticateUser } = require('../middleware/authen-users');
 const User = db.User;
 
 function asyncHandler(cb) {
@@ -16,8 +17,8 @@ function asyncHandler(cb) {
     }
   }
   //return the currently authenticated user along with a 200 HTTP status code.
-  router.get('/', asyncHandler(async(req,res) => {
-     const user = await User.findAll(req.currentUser);
+  router.get('/users', authenticateUser, asyncHandler(async(req, res) => {
+     const user = req.currentUser;
    
      res.status(200).json({
       firstName: user.firstName,
@@ -30,14 +31,14 @@ function asyncHandler(cb) {
      
    }));
 
-  router.post('/', asyncHandler(async (req,res) => {
+  router.post('/users', asyncHandler(async (req,res) => {
 
     try{
      await User.create(req.body);
       res.status(201).location('/').end();
     }catch(error){
       console.log('ERROR: ', error.name);
-      next();
+      // next();
     }
   }));
 
