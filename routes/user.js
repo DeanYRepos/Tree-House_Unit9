@@ -35,7 +35,8 @@ function asyncHandler(cb) {
 
     try{
      await User.create(req.body);
-      res.status(201).location('/').end();
+      res.location('/');
+      res.status(201).end();
     }catch(error){
       console.log('ERROR: ', error.name);
       // next();

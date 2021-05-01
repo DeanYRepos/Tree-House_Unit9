@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../models');
 const user = require('../models').User;
+const { authenticateUser } = require('../middleware/authen-users');
 const Course = db.Course;
 
 function asyncHandler(cb) {
@@ -17,7 +18,7 @@ function asyncHandler(cb) {
     }
   }
 
-  router.get('/courses', asyncHandler(async (req,res) => {
+  router.get('/courses',  asyncHandler(async (req,res) => {
       const courses = await Course.findAll({
         include:[
           {
@@ -31,22 +32,30 @@ function asyncHandler(cb) {
   }));
   
   router.get('/courses/:id', asyncHandler(async(req, res) => {
-    const course = await Course.findByPk(req.params.id);
+    const course = await Course.findByPk(req.params.id,{
+      include: [
+        {
+          model: user,
+          as:'User'
+        }
+      ]
+    });
     if (course){
-      res.json(course);
+      res.status(200).json(course);
       console.log(course);
     } else {
         res.status(404);
     }
+    
   }));
 
-  router.post('/courses', asyncHandler(async (req, res) => {
+  router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.create(req.body);
     res.status(201).location(`/courses/${course.id}`).json({message: "Course Created"}).end();
 
   }));
 
-  router.put('/courses/:id', asyncHandler(async (req, res) => {
+  router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if(course){
       
@@ -73,7 +82,7 @@ function asyncHandler(cb) {
     }
   }));
 
-  router.delete('/courses/:id', asyncHandler(async (req, res) => {
+  router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     if(course){
       await course.destroy();
