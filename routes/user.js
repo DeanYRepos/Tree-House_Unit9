@@ -33,13 +33,13 @@ function asyncHandler(cb) {
 
   router.post('/users', asyncHandler(async (req,res) => {
 
-    try{
+    try {
      await User.create(req.body);
-      res.location('/');
-      res.status(201).end();
-    }catch(error){
-      console.log('ERROR: ', error.name);
-      // next();
+      res.status(201).location('/').end();
+    } catch(error) {
+      
+      console.log('ERROR: ', error);
+   
     }
   }));
 
