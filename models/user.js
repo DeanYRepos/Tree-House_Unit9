@@ -46,7 +46,7 @@ module.exports = (sequelize) => {
             }
         },
         password: {
-            type: DataTypes.VIRTUAL,
+            type: DataTypes.STRING,
             allowNull: false,
             set(val){
                 if(val === this.password ){
