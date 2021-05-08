@@ -11,6 +11,9 @@ module.exports = (sequelize) => {
             validate:{
                 notNull:{
                     msg: 'A title is required'
+                },
+                notEmpty: {
+                    msg:'please provide a title'
                 }
             }
         },
@@ -20,6 +23,9 @@ module.exports = (sequelize) => {
             validate:{
                 notNull:{
                     msg: 'A description is required'
+                },
+                notEmpty: {
+                    msg:'please provide a description'
                 }
             }
         },
@@ -30,7 +36,10 @@ module.exports = (sequelize) => {
             type: DataTypes.STRING
         },
      
-    }, { sequelize });
+    }, { 
+        timestamps: false, 
+        sequelize
+     });
         Course.associate = (models) => {
             Course.belongsTo(models.User, {
                 as:"User",

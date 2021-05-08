@@ -3,26 +3,18 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const user = require('../models').User;
+const User = require('../models').User;
 const { authenticateUser } = require('../middleware/authen-users');
+const{ asyncHandler } = require('../middleware/async-handler');
 const Course = db.Course;
 
-function asyncHandler(cb) {
-    return async (req, res, next) => {
-      try {
-        await cb(req, res, next);
-      } catch (error) {
-        // Forward error to the global error handler
-        next(error);
-      }
-    }
-  }
+
 
   router.get('/courses',  asyncHandler(async (req,res) => {
       const courses = await Course.findAll({
         include:[
           {
-            model: user,
+            model: User,
             as: 'User',
           }
         ],
@@ -35,7 +27,7 @@ function asyncHandler(cb) {
     const course = await Course.findByPk(req.params.id,{
       include: [
         {
-          model: user,
+          model: User,
           as:'User'
         }
       ]
@@ -57,6 +49,7 @@ function asyncHandler(cb) {
 
   router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
+    const user = req.currentUSer;
     if(course){
       
   
@@ -72,11 +65,15 @@ function asyncHandler(cb) {
         estimatedTime: course.estimatedTime,
         materialsNeeded: course.materialsNeeded
      } }
-
+     
   
       );
       res.status(204).end();
-
+      // if(user !== course.userId) {
+      //   res.status(403);
+      //  }else{
+      //   res.status(204).end();
+      //  }
     }else{
       res.status(404).json({message: "Course not found"});
     }

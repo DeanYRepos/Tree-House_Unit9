@@ -18,6 +18,9 @@ module.exports = (sequelize) => {
             validate:{
                 notNull:{
                     msg: 'A first name is required'
+                },
+                notEmpty: {
+                    msg:'please provide a first name'
                 }
             }
         },
@@ -27,6 +30,9 @@ module.exports = (sequelize) => {
             validate:{
                 notNull:{
                     msg: 'A last name is required'
+                },
+                notEmpty: {
+                    msg:'please provide a last name'
                 }
             }
         },
@@ -39,6 +45,9 @@ module.exports = (sequelize) => {
             validate:{
                 notNull:{
                     msg: 'An email address is required'
+                },
+                notEmpty: {
+                    msg:'please provide an email address'
                 },
                 isEmail:{
                     msg: 'Please provide a valid email address'
@@ -64,7 +73,10 @@ module.exports = (sequelize) => {
                 }
             }
         }
-    }, { sequelize });
+    }, {
+        timestamps: false, 
+        sequelize 
+    });
 
     User.associate = (models) => {
         User.hasMany(models.Course,{
@@ -75,6 +87,7 @@ module.exports = (sequelize) => {
                 }
             
         });
+        
     }
     return User;
 }
