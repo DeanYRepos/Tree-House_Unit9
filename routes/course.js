@@ -17,12 +17,11 @@ const Course = db.Course;
           {
             model: User,
             as: 'User',   
-             attributes: {
-              exclude: ['password']
-            },
+            attributes: {
+             exclude: ['password']
+           },
           }
         ],
-        
       });
        res.status(200).json(courses);
        
@@ -30,14 +29,16 @@ const Course = db.Course;
   
   router.get('/courses/:id', asyncHandler(async(req, res) => {
     const course = await Course.findByPk(req.params.id,{
-   
+      attributes: {
+        exclude: ['password']
+      },
       include: [
         {
           model: User,
-          as:'User',
+          as:'User',   
           attributes: {
-            exclude: ['password']
-          },
+           exclude: ['password']
+         },
         }
       ]
     });
@@ -77,13 +78,16 @@ const Course = db.Course;
      
   
       );
-      res.status(204).end();
-      // if(user !== course.userId) {
-      //   res.status(403);
-      //  }else{
-      //   res.status(204).end();
-      //  }
-    }else{
+     // res.status(204).end();
+      if(user === course.userId) {
+      
+        res.status(204).end();
+     
+      }else{
+       
+        res.status(403);
+       }
+    } else {
       res.status(404).json({message: "Course not found"});
     }
   }));
