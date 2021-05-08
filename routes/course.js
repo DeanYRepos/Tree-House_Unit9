@@ -12,12 +12,17 @@ const Course = db.Course;
 
   router.get('/courses',  asyncHandler(async (req,res) => {
       const courses = await Course.findAll({
+    
         include:[
           {
             model: User,
-            as: 'User',
+            as: 'User',   
+             attributes: {
+              exclude: ['password']
+            },
           }
         ],
+        
       });
        res.status(200).json(courses);
        
@@ -25,10 +30,14 @@ const Course = db.Course;
   
   router.get('/courses/:id', asyncHandler(async(req, res) => {
     const course = await Course.findByPk(req.params.id,{
+   
       include: [
         {
           model: User,
-          as:'User'
+          as:'User',
+          attributes: {
+            exclude: ['password']
+          },
         }
       ]
     });
