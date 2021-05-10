@@ -37,7 +37,7 @@ module.exports = (sequelize) => {
         },
      
     }, { 
-        timestamps: false, 
+        // timestamps: false, 
         sequelize
      });
         Course.associate = (models) => {

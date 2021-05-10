@@ -12,13 +12,15 @@ const Course = db.Course;
 
   router.get('/courses',  asyncHandler(async (req,res) => {
       const courses = await Course.findAll({
-    
+        attributes: {
+          exclude: ['password','createdAt', 'updatedAt']
+        },
         include:[
           {
             model: User,
             as: 'User',   
             attributes: {
-             exclude: ['password']
+             exclude: ['password','createdAt', 'updatedAt']
            },
           }
         ],
@@ -30,14 +32,14 @@ const Course = db.Course;
   router.get('/courses/:id', asyncHandler(async(req, res) => {
     const course = await Course.findByPk(req.params.id,{
       attributes: {
-        exclude: ['password']
+        exclude: ['password','createdAt', 'updatedAt']
       },
       include: [
         {
           model: User,
           as:'User',   
           attributes: {
-           exclude: ['password']
+           exclude: ['password','createdAt', 'updatedAt']
          },
         }
       ]
@@ -59,37 +61,54 @@ const Course = db.Course;
 
   router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
-    const user = req.currentUSer;
-    if(course){
+    const user = req.currentUser;
+    try{
+
+      if(course ){
       
   
-      await Course.update({
-        title: req.body.title,
-        description: req.body.description,
-        estimatedTime: req.body.estimatedTime,
-        materialsNeeded: req.body.materialsNeeded
-      }, {
-        where: {
-        title: course.title,
-        description: course.description,
-        estimatedTime: course.estimatedTime,
-        materialsNeeded: course.materialsNeeded
-     } }
-     
-  
-      );
-     // res.status(204).end();
-      if(user === course.userId) {
-      
+        await Course.update({
+          title: req.body.title,
+          description: req.body.description,
+          estimatedTime: req.body.estimatedTime,
+          materialsNeeded: req.body.materialsNeeded
+        }, {
+          where: {
+          title: course.title,
+          description: course.description,
+          estimatedTime: course.estimatedTime,
+          materialsNeeded: course.materialsNeeded
+       } }
+       
+    
+        );
+        
+     //  res.status(204).end();
+       if(user.id === course.userId){
         res.status(204).end();
-     
+        console.log(user.id);
+        console.log(course.userId);
+
+       } else {
+         res.status(403);
+       }
       }else{
        
         res.status(403);
        }
-    } else {
-      res.status(404).json({message: "Course not found"});
+    } catch (error){
+      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+        const errors = error.errors.map(err => err.message);
+        res.status(400).json({ errors });   
+        console.log(error);
+      } else {
+         
+        throw error; 
+        
+        
+      }
     }
+  
   }));
 
   router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
