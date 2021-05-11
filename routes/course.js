@@ -62,53 +62,36 @@ const Course = db.Course;
   router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     const user = req.currentUser;
-    try{
+    
 
       if(course ){
-      
-  
-        await Course.update({
-          title: req.body.title,
-          description: req.body.description,
-          estimatedTime: req.body.estimatedTime,
-          materialsNeeded: req.body.materialsNeeded
-        }, {
-          where: {
-          title: course.title,
-          description: course.description,
-          estimatedTime: course.estimatedTime,
-          materialsNeeded: course.materialsNeeded
-       } }
-       
-    
-        );
-        
-     //  res.status(204).end();
-       if(user.id === course.userId){
-        res.status(204).end();
-        console.log(user.id);
-        console.log(course.userId);
+        if( course.userId === user.id){
+          console.log(course.userId);
+          await Course.update({
 
-       } else {
-         res.status(403);
-       }
-      }else{
-       
-        res.status(403);
-       }
-    } catch (error){
-      if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
-        const errors = error.errors.map(err => err.message);
-        res.status(400).json({ errors });   
-        console.log(error);
-      } else {
+            title: req.body.title,
+            description: req.body.description,
+            estimatedTime: req.body.estimatedTime,
+            materialsNeeded: req.body.materialsNeeded,
+            
+
+          }, {
+            where: {
+            title: course.title,
+            description: course.description,
+            estimatedTime: course.estimatedTime,
+            materialsNeeded: course.materialsNeeded,
+            
+         } }
          
-        throw error; 
-        
-        
-      }
-    }
+      
+          );
+         res.status(204).end();
+        } else {
+          res.status(403);
+         }
   
+        }
   }));
 
   router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
