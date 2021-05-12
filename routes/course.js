@@ -61,12 +61,14 @@ const Course = db.Course;
 
   router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
-    const user = req.currentUser;
+    const user = req.currentUser.id;
     
-
-      if(course ){
-        if( course.userId === user.id){
-          console.log(course.userId);
+      console.log(course);
+    // console.log(user);
+      if(course.userId === user ){
+  
+        // if( course.userId === user.id){
+    
           await Course.update({
 
             title: req.body.title,
@@ -77,6 +79,7 @@ const Course = db.Course;
 
           }, {
             where: {
+            
             title: course.title,
             description: course.description,
             estimatedTime: course.estimatedTime,
@@ -86,21 +89,25 @@ const Course = db.Course;
          
       
           );
-         res.status(204).end();
-        } else {
-          res.status(403);
-         }
+        //   if( course.userId === user.id){
+          res.status(204).end();
+        // } else {
+        //   res.status(403);
+        //  }
   
-        }
+        }else {
+             res.status(403).end();
+            }
   }));
 
   router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
-    if(course){
+    const user = req.currentUser.id;
+    if(course.userId === user){
       await course.destroy();
       res.status(204).end();
     } else{
-      res.status(404).json({message: "Course not found"});
+      res.status(403).json({message: "Course not found"});
     }
   
   }))
