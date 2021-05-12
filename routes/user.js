@@ -8,7 +8,7 @@ const{ asyncHandler } = require('../middleware/async-handler');
 const User = db.User;
 
 
-  //return the currently authenticated user along with a 200 HTTP status code.
+  //returns the currently authenticated user along with a 200 HTTP status code.
   router.get('/users', authenticateUser, asyncHandler(async(req, res) => {
      const user = req.currentUser;
    
@@ -23,7 +23,7 @@ const User = db.User;
      console.log(user);
      
    }));
-
+   //Posts a new user and handles 'SequelizeValidationError' and  'SequelizeUniqueConstraintError' errors
   router.post('/users', asyncHandler(async (req,res) => {
     try{
 

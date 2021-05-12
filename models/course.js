@@ -37,11 +37,11 @@ module.exports = (sequelize) => {
         },
      
     }, { 
-        // timestamps: false, 
+       
         sequelize
      });
-        Course.associate = (models) => {
-            Course.belongsTo(models.User, {
+        Course.associate = (models) => { 
+            Course.belongsTo(models.User, { //has one association, sets up the alias and foreign key
                 as:"User",
                 foreignKey:{
                     fieldName: 'userId',

@@ -31,12 +31,7 @@ app.use('/api', course);
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
-// setup a friendly greeting for the root route
-// app.get('/', (req, res) => {
-//   res.json({
-//     message: 'Welcome to the REST API project!',
-//   });
-// });
+
 
 // send 404 if no other route matched
 app.use((req, res) => {
@@ -47,6 +42,7 @@ app.use((req, res) => {
 
 // setup a global error handler
 app.use((err, req, res, next) => {
+  try{
   if (enableGlobalErrorLogging) {
     console.error(`Global error handler: ${JSON.stringify(err.stack)}`);
   }
@@ -55,6 +51,17 @@ app.use((err, req, res, next) => {
     message: err.message,
     error: {},
   });
+}catch(error){
+  if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+    const errors = error.errors.map(err => err.message);
+    res.status(400).json({ errors });   
+    console.log(error);
+  } else {
+     
+    throw error; 
+    
+    
+  }}
 });
 
 // set our port

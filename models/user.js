@@ -74,12 +74,12 @@ module.exports = (sequelize) => {
             }
         }
     }, {
-        // timestamps: false, 
+       
         sequelize 
     });
 
     User.associate = (models) => {
-        User.hasMany(models.Course,{
+        User.hasMany(models.Course,{ //has many model associations, shares alias and foreign key with associated model
             as:"User",
                 foreignKey:{
                     fieldName: 'userId',

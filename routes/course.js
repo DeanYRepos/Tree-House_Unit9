@@ -9,8 +9,8 @@ const{ asyncHandler } = require('../middleware/async-handler');
 const Course = db.Course;
 
 
-
-  router.get('/courses',  asyncHandler(async (req,res) => {
+  // Get route responds with list of courses and authenticated users
+  router.get('/courses',  asyncHandler(async (req,res) => { 
       const courses = await Course.findAll({
         attributes: {
           exclude: ['password','createdAt', 'updatedAt']
@@ -28,7 +28,7 @@ const Course = db.Course;
        res.status(200).json(courses);
        
   }));
-  
+  //Get route returns single course with authenticated user
   router.get('/courses/:id', asyncHandler(async(req, res) => {
     const course = await Course.findByPk(req.params.id,{
       attributes: {
@@ -52,22 +52,21 @@ const Course = db.Course;
     }
     
   }));
-
+// Post route creates new course
   router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.create(req.body);
     res.status(201).location(`/courses/${course.id}`).json({message: "Course Created"}).end();
 
   }));
-
+  // Update route edits course when authenticated user is owner of the course
   router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     const user = req.currentUser.id;
-    
-      console.log(course);
-    // console.log(user);
+   
+      
       if(course.userId === user ){
   
-        // if( course.userId === user.id){
+       
     
           await Course.update({
 
@@ -89,17 +88,16 @@ const Course = db.Course;
          
       
           );
-        //   if( course.userId === user.id){
+        
           res.status(204).end();
-        // } else {
-        //   res.status(403);
-        //  }
   
         }else {
              res.status(403).end();
+            
             }
   }));
-
+ 
+  // Delete route deletes course when authenticated user is owner of the course
   router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     const course = await Course.findByPk(req.params.id);
     const user = req.currentUser.id;
