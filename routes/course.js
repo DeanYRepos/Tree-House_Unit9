@@ -54,8 +54,21 @@ const Course = db.Course;
   }));
 // Post route creates new course
   router.post('/courses', authenticateUser, asyncHandler(async (req, res) => {
+   try{
     const course = await Course.create(req.body);
     res.status(201).location(`/courses/${course.id}`).json({message: "Course Created"}).end();
+   }catch(error){
+    if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+      const errors = error.errors.map(err => err.message);
+      res.status(400).json({ errors });   
+      console.log(error);
+    } else {
+       
+      throw error; 
+      
+      
+    }
+   }
 
   }));
   // Update route edits course when authenticated user is owner of the course
@@ -63,7 +76,7 @@ const Course = db.Course;
     const course = await Course.findByPk(req.params.id);
     const user = req.currentUser.id;
    
-      
+     try{
       if(course.userId === user ){
   
        
@@ -95,6 +108,19 @@ const Course = db.Course;
              res.status(403).end();
             
             }
+          } catch(error){
+
+            if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+              const errors = error.errors.map(err => err.message);
+              res.status(400).json({ errors });   
+              console.log(error);
+            } else {
+               
+              throw error; 
+              
+              
+            }
+          }
   }));
  
   // Delete route deletes course when authenticated user is owner of the course
